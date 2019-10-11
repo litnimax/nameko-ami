@@ -1,0 +1,23 @@
+rpc_exchange: 'nameko-rpc'
+
+AMQP_URI: 'pyamqp://guest:guest@rabbitmq'
+
+ASTERISK_ARI_URL: ${ASTERISK_ARI_URL:'http://127.0.0.1:8088/ari'}
+ASTERISK_ARI_USER: ${ASTERISK_ARI_USER:'demo'}
+ASTERISK_ARI_PASS: ${ASTERISK_ARI_PASS:'demo'}
+ASTERISK_ARI_APP: ${ASTERISK_ARI_APP:'demo'}
+# Asterisk Manager
+ASTERISK_AMI_HOST: ${ASTERISK_AMI_HOST:'localhost'}
+ASTERISK_AMI_PORT: ${ASTERISK_AMI_PORT:'5038'}
+ASTERISK_AMI_USER: ${ASTERISK_AMI_USER:'demo'}
+ASTERISK_AMI_PASS: ${ASTERISK_AMI_PASS:'demo'}
+ASTERISK_AMI_TRACE_EVENTS: ${ASTERISK_AMI_TRACE_EVENTS:no}
+# 
+LOGGING:
+    version: 1
+    handlers:
+        console:
+            class: logging.StreamHandler
+    root:
+        level: DEBUG
+        handlers: [console]
