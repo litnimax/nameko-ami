@@ -12,6 +12,8 @@ setup(
     install_requires=[
         "nameko>=2.5.1",
     ],
+    packages=('nameko_ami',),
+    package_dir={'nameko_ami': 'nameko_ami'},    
     extras_require={
         'dev': [
             "coverage==4.0.3",
@@ -19,8 +21,8 @@ setup(
             "pylint==1.8.2",
             "pytest==2.8.3",
         ]
-    },
-    zip_safe=True,
+    },    
+    zip_safe=False,
     license='Apache License, Version 2.0',
     classifiers=[
         "Programming Language :: Python",
