@@ -4,9 +4,9 @@ from setuptools import setup
 setup(
     name='nameko-ami',
     version='1.0',
-    description='Nameko Asterisk Manager extension',
+    description='Nameko Asterisk Manager (AMI) extension',
     author='Max Lit',
-    author_email='max.lit.mbox@gmail.co,',
+    author_email='max.lit.mbox@gmail.com',
     url='http://github.com/litnimax/nameko-ami',
     py_modules=['nameko_ami'],
     install_requires=[
