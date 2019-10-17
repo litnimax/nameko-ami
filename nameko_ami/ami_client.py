@@ -1,8 +1,6 @@
 import eventlet
+eventlet.monkey_patch() 
 import logging
-
-eventlet.monkey_patch()
-
 import asterisk.manager
 from nameko.extensions import Entrypoint, ProviderCollector, SharedExtension
 from nameko.extensions import DependencyProvider
@@ -91,6 +89,7 @@ class AmiEventHandler(Entrypoint):
         self.ami_client.unregister_provider(self)
 
     def handle_event(self, message, manager):
+        logger.debug('AMI handle_event: %s', message)
         args = (message, manager)
         kwargs = {}
         context_data = {}
@@ -99,6 +98,7 @@ class AmiEventHandler(Entrypoint):
                                     handle_result=self.handle_result)
 
     def handle_result(self, message, worker_ctx, result=None, exc_info=None):
+        #logger.debug('AMI handle_result %s, %s', result, exc_info)
         return result, exc_info
 
 

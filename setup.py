@@ -11,6 +11,7 @@ setup(
     py_modules=['nameko_ami'],
     install_requires=[
         "nameko>=2.5.1",
+        "pyst2",
     ],
     packages=('nameko_ami',),
     package_dir={'nameko_ami': 'nameko_ami'},    
