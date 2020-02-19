@@ -23,17 +23,12 @@ class AmiClient(SharedExtension, ProviderCollector):
     manager = None
 
     def setup(self):
-        if not self.container.config.get('ASTERISK_AMI_ENABLED'):
-            logger.info('AMI disabled.')
-            return
         self.ami_host = self.container.config['ASTERISK_AMI_HOST']
         self.ami_port = self.container.config['ASTERISK_AMI_PORT']
         self.ami_user = self.container.config['ASTERISK_AMI_USER']
         self.ami_pass = self.container.config['ASTERISK_AMI_PASS']
 
     def start(self):
-        if not self.container.config.get('ASTERISK_AMI_ENABLED'):
-            return
         self.container.spawn_managed_thread(self.run)
 
     def stop(self):
