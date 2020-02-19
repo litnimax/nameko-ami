@@ -31,3 +31,12 @@ class AmiBroker:
                                                'data': event.data})
 
 ```
+
+## Configuration parameters
+
+* ASTERISK_AMI_HOST
+* ASTERISK_AMI_PORT
+* ASTERISK_AMI_USER
+* ASTERISK_AMI_PASS
+* ASTERISK_AMI_TRACE_EVENTS: if set AMI entrypoint will dump every event message it receives.
+

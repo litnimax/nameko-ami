@@ -23,12 +23,17 @@ class AmiClient(SharedExtension, ProviderCollector):
     manager = None
 
     def setup(self):
+        if not self.container.config.get('ASTERISK_AMI_ENABLED'):
+            logger.info('AMI disabled.')
+            return
         self.ami_host = self.container.config['ASTERISK_AMI_HOST']
         self.ami_port = self.container.config['ASTERISK_AMI_PORT']
         self.ami_user = self.container.config['ASTERISK_AMI_USER']
         self.ami_pass = self.container.config['ASTERISK_AMI_PASS']
 
     def start(self):
+        if not self.container.config.get('ASTERISK_AMI_ENABLED'):
+            return
         self.container.spawn_managed_thread(self.run)
 
     def stop(self):
@@ -36,10 +41,9 @@ class AmiClient(SharedExtension, ProviderCollector):
             try:
                 self.manager.logoff()
                 self.manager.close()
-            except:
+            except Exception:
                 pass
             super(AmiClient, self).stop()
-
 
     def run(self):
         while True:
@@ -47,7 +51,7 @@ class AmiClient(SharedExtension, ProviderCollector):
                 self.manager = asterisk.manager.Manager()
                 self.manager.connect(self.ami_host, port=self.ami_port)
                 logger.info('AMI connected')
-                self.manager.login(self.ami_user, self.ami_pass)                
+                self.manager.login(self.ami_user, self.ami_pass)
                 # Register for events
                 self.register_event_handlers()
                 while True:
@@ -60,7 +64,7 @@ class AmiClient(SharedExtension, ProviderCollector):
             except Exception as e:
                 if isinstance(e, asterisk.manager.ManagerSocketException):
                     logger.error("Error connecting AMI %s:%s: %s",
-                             self.ami_host, self.ami_port, e)
+                                 self.ami_host, self.ami_port, e)
                 elif isinstance(e, asterisk.manager.ManagerAuthException):
                     logger.error("Error logging in to the manager: %s" % e)
                 elif isinstance(e, asterisk.manager.ManagerException):
@@ -98,7 +102,6 @@ class AmiEventHandler(Entrypoint):
                                     handle_result=self.handle_result)
 
     def handle_result(self, message, worker_ctx, result=None, exc_info=None):
-        #logger.debug('AMI handle_result %s, %s', result, exc_info)
         return result, exc_info
 
 
