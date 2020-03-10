@@ -44,6 +44,8 @@ class AmiClient(SharedExtension, ProviderCollector):
         while True:
             try:
                 self.manager = asterisk.manager.Manager()
+                logger.debug('AMI connecting to %s:%s',
+                             self.ami_host, self.ami_pass)
                 self.manager.connect(self.ami_host, port=self.ami_port)
                 logger.info('AMI connected')
                 self.manager.login(self.ami_user, self.ami_pass)
@@ -88,7 +90,7 @@ class AmiEventHandler(Entrypoint):
         self.ami_client.unregister_provider(self)
 
     def handle_event(self, message, manager):
-        logger.debug('AMI handle_event: %s', message)
+        logger.debug('Event: %s', message)
         args = (message, manager)
         kwargs = {}
         context_data = {}
