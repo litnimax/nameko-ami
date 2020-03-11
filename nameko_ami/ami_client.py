@@ -1,5 +1,7 @@
 import eventlet
 eventlet.monkey_patch() 
+from functools import partial
+import json
 import logging
 import asterisk.manager
 from nameko.extensions import Entrypoint, ProviderCollector, SharedExtension
@@ -11,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 class AMiNotConnected(Exception):
     pass
+
 
 class AmiClientExtension(DependencyProvider):
     def get_dependency(self, worker_ctx):
@@ -45,7 +48,7 @@ class AmiClient(SharedExtension, ProviderCollector):
             try:
                 self.manager = asterisk.manager.Manager()
                 logger.debug('AMI connecting to %s:%s',
-                             self.ami_host, self.ami_pass)
+                             self.ami_host, self.ami_port)
                 self.manager.connect(self.ami_host, port=self.ami_port)
                 logger.info('AMI connected')
                 self.manager.login(self.ami_user, self.ami_pass)
@@ -91,12 +94,13 @@ class AmiEventHandler(Entrypoint):
 
     def handle_event(self, message, manager):
         logger.debug('Event: %s', message)
-        args = (message, manager)
-        kwargs = {}
-        context_data = {}
-        self.container.spawn_worker(self, args, kwargs,
-                                    context_data=context_data,
-                                    handle_result=self.handle_result)
+        if self.container.config.get('ASTERISK_AMI_TRACE_EVENTS'):
+            logger.debug(
+                '[AMI_TRACE_EVENT] %s', json.dumps(message.headers, indent=2))
+        handle_result = partial(self.handle_result, message)
+        self.container.spawn_worker(self, (message.headers, manager), {},
+                                    context_data={},
+                                    handle_result=handle_result)
 
     def handle_result(self, message, worker_ctx, result=None, exc_info=None):
         return result, exc_info
