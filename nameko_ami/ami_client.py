@@ -94,7 +94,18 @@ class AmiEventHandler(Entrypoint):
 
     def handle_event(self, message, manager):
         logger.debug('Event: %s', message)
-        if self.container.config.get('ASTERISK_AMI_TRACE_EVENTS'):
+        trace = self.container.config.get('ASTERISK_AMI_TRACE_EVENTS')
+        print(111, trace, type(trace))
+        if type(trace) is bool and trace:
+            # Trace all AMI events.
+            logger.debug(
+                '[AMI_TRACE_EVENT] %s', json.dumps(message.headers, indent=2))
+        elif type(trace) is str and trace == message.headers.get('Event'):
+            # Trace specific AMI event
+            logger.debug(
+                '[AMI_TRACE_EVENT] %s', json.dumps(message.headers, indent=2))
+        elif type(trace) is list and message.headers.get('Event') in trace:
+            # Trace AMI event from list of events
             logger.debug(
                 '[AMI_TRACE_EVENT] %s', json.dumps(message.headers, indent=2))
         handle_result = partial(self.handle_result, message)
